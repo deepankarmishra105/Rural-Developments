@@ -1,5 +1,7 @@
-import React from "react";
+import React, { useState } from "react";
 import "./DashboardPage.css";
+import Login from "./Login";
+
 
 const Icon = ({ type, size = 24 }) => {
   const icons = {
@@ -191,6 +193,13 @@ const updates = [
 ];
 
 function DashboardPage(){
+  const[login,setlogin]=useState(false)
+  function handleclick(){
+    setlogin(true)
+  }
+  if(login){
+    return (<Login/>)
+  }
   return (
     <div className="dashboard">
 
@@ -257,11 +266,11 @@ function DashboardPage(){
             <Icon type="search" size={21} />
           </button>
 
-          <button className="login-btn">
+          <button className="login-btn" onClick={handleclick}>
             Login
           </button>
 
-          <button className="register-btn">
+          <button className="register-btn" onClick={handleclick}>
             Register
           </button>
 
