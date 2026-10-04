@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import "./DashboardPage.css";
-import Login from "./Login";
+import Auth from "./Auth";
 
 
 const Icon = ({ type, size = 24 }) => {
@@ -198,7 +198,7 @@ function DashboardPage(){
     setlogin(true)
   }
   if(login){
-    return (<Login/>)
+    return (<Auth/>)
   }
   return (
     <div className="dashboard">

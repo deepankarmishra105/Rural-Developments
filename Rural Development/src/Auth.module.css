@@ -1,0 +1,884 @@
+.page {
+  --bg: #08090d;
+  --card: rgba(255, 255, 255, 0.055);
+  --border: rgba(255, 255, 255, 0.1);
+  --text: #f7f7f8;
+  --muted: #9295a1;
+  --accent: #8b5cf6;
+  --accent-light: #a78bfa;
+
+  min-height: 100vh;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 30px;
+
+  background:
+    radial-gradient(
+      circle at 20% 20%,
+      rgba(139, 92, 246, 0.15),
+      transparent 30%
+    ),
+    radial-gradient(
+      circle at 80% 80%,
+      rgba(59, 130, 246, 0.12),
+      transparent 30%
+    ),
+    var(--bg);
+
+  color: var(--text);
+  font-family:
+    Inter,
+    ui-sans-serif,
+    system-ui,
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    sans-serif;
+}
+
+/* --------------------------------
+   Background
+-------------------------------- */
+
+.grid {
+  position: absolute;
+  inset: 0;
+  opacity: 0.18;
+  pointer-events: none;
+
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.04) 1px, transparent 1px),
+    linear-gradient(
+      90deg,
+      rgba(255, 255, 255, 0.04) 1px,
+      transparent 1px
+    );
+
+  background-size: 60px 60px;
+
+  mask-image: linear-gradient(
+    to bottom,
+    black,
+    transparent 80%
+  );
+}
+
+.orbOne,
+.orbTwo {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(80px);
+  pointer-events: none;
+}
+
+.orbOne {
+  width: 350px;
+  height: 350px;
+  top: -150px;
+  left: -100px;
+  background: rgba(139, 92, 246, 0.25);
+  animation: floatOne 8s ease-in-out infinite;
+}
+
+.orbTwo {
+  width: 300px;
+  height: 300px;
+  right: -100px;
+  bottom: -100px;
+  background: rgba(37, 99, 235, 0.2);
+  animation: floatTwo 10s ease-in-out infinite;
+}
+
+@keyframes floatOne {
+  0%,
+  100% {
+    transform: translate(0, 0);
+  }
+
+  50% {
+    transform: translate(60px, 40px);
+  }
+}
+
+@keyframes floatTwo {
+  0%,
+  100% {
+    transform: translate(0, 0);
+  }
+
+  50% {
+    transform: translate(-50px, -30px);
+  }
+}
+
+/* --------------------------------
+   Main Card
+-------------------------------- */
+
+.authWrapper {
+  position: relative;
+  z-index: 2;
+
+  width: min(1100px, 100%);
+  min-height: 680px;
+
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+
+  overflow: hidden;
+
+  border: 1px solid var(--border);
+  border-radius: 28px;
+
+  background: rgba(14, 15, 21, 0.78);
+
+  backdrop-filter: blur(30px);
+  -webkit-backdrop-filter: blur(30px);
+
+  box-shadow:
+    0 40px 100px rgba(0, 0, 0, 0.5),
+    inset 0 1px rgba(255, 255, 255, 0.05);
+
+  animation: cardAppear 0.8s ease forwards;
+}
+
+@keyframes cardAppear {
+  from {
+    opacity: 0;
+    transform: translateY(25px) scale(0.98);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* --------------------------------
+   Visual
+-------------------------------- */
+
+.visual {
+  position: relative;
+  overflow: hidden;
+  padding: 48px;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+
+  background:
+    radial-gradient(
+      circle at 50% 50%,
+      rgba(139, 92, 246, 0.18),
+      transparent 45%
+    ),
+    linear-gradient(
+      145deg,
+      rgba(255, 255, 255, 0.05),
+      rgba(255, 255, 255, 0.015)
+    );
+}
+
+.visual::before {
+  content: "";
+  position: absolute;
+  width: 450px;
+  height: 450px;
+
+  top: 50%;
+  left: 50%;
+
+  transform: translate(-50%, -50%);
+
+  border: 1px solid rgba(167, 139, 250, 0.15);
+  border-radius: 50%;
+
+  box-shadow:
+    0 0 0 60px rgba(139, 92, 246, 0.025),
+    0 0 0 120px rgba(139, 92, 246, 0.02);
+
+  animation: pulse 5s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%,
+  100% {
+    transform: translate(-50%, -50%) scale(0.95);
+  }
+
+  50% {
+    transform: translate(-50%, -50%) scale(1.05);
+  }
+}
+
+.visualGlow {
+  position: absolute;
+  width: 180px;
+  height: 180px;
+  top: 30%;
+  left: 45%;
+
+  border-radius: 50%;
+  background: var(--accent);
+  filter: blur(100px);
+  opacity: 0.2;
+}
+
+.badge {
+  position: relative;
+  z-index: 2;
+
+  width: fit-content;
+
+  display: flex;
+  align-items: center;
+  gap: 9px;
+
+  padding: 8px 13px;
+
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 999px;
+
+  color: #c7c9d1;
+  font-size: 12px;
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.badgeDot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #4ade80;
+  box-shadow: 0 0 12px #4ade80;
+}
+
+.visualContent {
+  position: relative;
+  z-index: 2;
+  margin-top: auto;
+  margin-bottom: auto;
+  max-width: 460px;
+}
+
+.eyebrow {
+  margin-bottom: 18px;
+
+  color: var(--accent-light);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 2.5px;
+}
+
+.visualContent h1 {
+  margin: 0;
+
+  font-size: clamp(42px, 5vw, 64px);
+  line-height: 0.98;
+  letter-spacing: -3px;
+}
+
+.visualContent h1 span {
+  color: transparent;
+
+  background: linear-gradient(
+    90deg,
+    #a78bfa,
+    #60a5fa
+  );
+
+  background-clip: text;
+  -webkit-background-clip: text;
+}
+
+.description {
+  max-width: 390px;
+  margin-top: 24px;
+
+  color: var(--muted);
+  font-size: 15px;
+  line-height: 1.7;
+}
+
+/* --------------------------------
+   Floating Cards
+-------------------------------- */
+
+.floatingCard {
+  position: absolute;
+  z-index: 3;
+
+  display: flex;
+  align-items: center;
+  gap: 12px;
+
+  padding: 13px 16px;
+
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 14px;
+
+  background: rgba(20, 21, 28, 0.7);
+
+  backdrop-filter: blur(15px);
+
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
+
+  animation: cardFloat 5s ease-in-out infinite;
+}
+
+.floatingCard strong {
+  display: block;
+  margin-bottom: 3px;
+
+  font-size: 12px;
+}
+
+.floatingCard small {
+  color: var(--muted);
+  font-size: 10px;
+}
+
+.cardOne {
+  top: 24%;
+  right: 8%;
+}
+
+.cardTwo {
+  right: 12%;
+  bottom: 13%;
+  animation-delay: -2s;
+}
+
+.icon,
+.avatar {
+  width: 32px;
+  height: 32px;
+
+  display: grid;
+  place-items: center;
+
+  border-radius: 10px;
+}
+
+.icon {
+  color: #86efac;
+  background: rgba(34, 197, 94, 0.12);
+}
+
+.avatar {
+  color: #ddd6fe;
+  background: linear-gradient(
+    135deg,
+    #7c3aed,
+    #3b82f6
+  );
+
+  font-size: 10px;
+  font-weight: 700;
+}
+
+@keyframes cardFloat {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+
+  50% {
+    transform: translateY(-12px);
+  }
+}
+
+.circleShape {
+  position: absolute;
+  right: -100px;
+  bottom: -130px;
+
+  width: 300px;
+  height: 300px;
+
+  border-radius: 50%;
+  border: 1px solid rgba(167, 139, 250, 0.12);
+}
+
+/* --------------------------------
+   Form
+-------------------------------- */
+
+.formSection {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 55px 65px;
+
+  background: rgba(8, 9, 13, 0.35);
+}
+
+.formContainer {
+  width: 100%;
+  max-width: 390px;
+}
+
+.logo {
+  width: 44px;
+  height: 44px;
+
+  display: grid;
+  place-items: center;
+
+  margin-bottom: 30px;
+
+  border: 1px solid rgba(167, 139, 250, 0.25);
+  border-radius: 13px;
+
+  color: white;
+
+  background: linear-gradient(
+    135deg,
+    rgba(139, 92, 246, 0.3),
+    rgba(59, 130, 246, 0.15)
+  );
+
+  box-shadow: 0 10px 30px rgba(139, 92, 246, 0.15);
+
+  font-size: 20px;
+}
+
+.heading h2 {
+  margin: 0;
+
+  font-size: 30px;
+  letter-spacing: -1px;
+}
+
+.heading p {
+  margin: 9px 0 30px;
+
+  color: var(--muted);
+  font-size: 14px;
+}
+
+/* --------------------------------
+   Inputs
+-------------------------------- */
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 19px;
+}
+
+.inputGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.inputGroup label,
+.labelRow label {
+  color: #d4d5db;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.labelRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.inputWrapper {
+  position: relative;
+
+  display: flex;
+  align-items: center;
+
+  height: 48px;
+
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  border-radius: 11px;
+
+  background: rgba(255, 255, 255, 0.035);
+
+  transition: 0.25s ease;
+}
+
+.inputWrapper:focus-within {
+  border-color: rgba(139, 92, 246, 0.7);
+
+  background: rgba(139, 92, 246, 0.04);
+
+  box-shadow:
+    0 0 0 3px rgba(139, 92, 246, 0.08),
+    0 0 25px rgba(139, 92, 246, 0.06);
+}
+
+.inputIcon {
+  width: 42px;
+
+  display: flex;
+  justify-content: center;
+
+  color: #737681;
+  font-size: 15px;
+}
+
+.inputWrapper input {
+  width: 100%;
+  height: 100%;
+
+  border: none;
+  outline: none;
+
+  color: white;
+  background: transparent;
+
+  font-size: 13px;
+}
+
+.inputWrapper input::placeholder {
+  color: #555863;
+}
+
+.passwordToggle {
+  margin-right: 10px;
+
+  border: none;
+  background: transparent;
+
+  color: #70727d;
+
+  cursor: pointer;
+}
+
+.forgot {
+  padding: 0;
+
+  border: none;
+  background: transparent;
+
+  color: var(--accent-light);
+
+  font-size: 11px;
+  cursor: pointer;
+}
+
+/* --------------------------------
+   Terms
+-------------------------------- */
+
+.terms {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+
+  color: var(--muted);
+  font-size: 11px;
+}
+
+.terms input {
+  accent-color: var(--accent);
+}
+
+.terms a {
+  color: var(--accent-light);
+  text-decoration: none;
+}
+
+/* --------------------------------
+   Submit
+-------------------------------- */
+
+.submit {
+  height: 49px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+
+  margin-top: 3px;
+
+  border: none;
+  border-radius: 11px;
+
+  color: white;
+
+  background: linear-gradient(
+    100deg,
+    #7c3aed,
+    #6366f1
+  );
+
+  box-shadow:
+    0 10px 30px rgba(99, 102, 241, 0.2);
+
+  font-size: 13px;
+  font-weight: 600;
+
+  cursor: pointer;
+
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.submit:hover {
+  transform: translateY(-2px);
+
+  box-shadow:
+    0 15px 35px rgba(99, 102, 241, 0.3);
+}
+
+.arrow {
+  transition: transform 0.2s ease;
+}
+
+.submit:hover .arrow {
+  transform: translateX(4px);
+}
+
+/* --------------------------------
+   Divider
+-------------------------------- */
+
+.divider {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+
+  margin: 27px 0 18px;
+
+  color: #60626c;
+  font-size: 10px;
+}
+
+.divider::before,
+.divider::after {
+  content: "";
+  height: 1px;
+  flex: 1;
+
+  background: rgba(255, 255, 255, 0.07);
+}
+
+/* --------------------------------
+   Social
+-------------------------------- */
+
+.socials {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.socials button {
+  height: 43px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 10px;
+
+  color: #d1d2d7;
+  background: rgba(255, 255, 255, 0.025);
+
+  font-size: 11px;
+  cursor: pointer;
+
+  transition: 0.2s ease;
+}
+
+.socials button:hover {
+  background: rgba(255, 255, 255, 0.06);
+  border-color: rgba(255, 255, 255, 0.15);
+}
+
+.google {
+  color: #f87171;
+  font-weight: 800;
+}
+
+.github {
+  color: white;
+}
+
+/* --------------------------------
+   Switch
+-------------------------------- */
+
+.switchText {
+  margin-top: 27px;
+
+  color: #686a74;
+
+  text-align: center;
+  font-size: 11px;
+}
+
+.switchText button {
+  margin-left: 5px;
+
+  padding: 0;
+
+  border: none;
+  background: transparent;
+
+  color: var(--accent-light);
+
+  font-weight: 600;
+  cursor: pointer;
+}
+
+/* --------------------------------
+   Tablet
+-------------------------------- */
+
+@media (max-width: 850px) {
+  .page {
+    padding: 20px;
+  }
+
+  .authWrapper {
+    grid-template-columns: 1fr;
+    max-width: 500px;
+  }
+
+  .visual {
+    min-height: 320px;
+    padding: 35px;
+  }
+
+  .visualContent {
+    margin-top: 60px;
+  }
+
+  .visualContent h1 {
+    font-size: 43px;
+  }
+
+  .cardOne {
+    top: 20%;
+  }
+
+  .cardTwo {
+    bottom: 8%;
+  }
+
+  .formSection {
+    padding: 45px 40px;
+  }
+}
+
+/* --------------------------------
+   Mobile
+-------------------------------- */
+
+@media (max-width: 520px) {
+  .page {
+    padding: 0;
+    align-items: stretch;
+  }
+
+  .authWrapper {
+    min-height: 100vh;
+
+    border: none;
+    border-radius: 0;
+
+    box-shadow: none;
+  }
+
+  .visual {
+    min-height: 310px;
+
+    padding: 25px;
+  }
+
+  .badge {
+    font-size: 10px;
+  }
+
+  .visualContent {
+    margin-top: 45px;
+  }
+
+  .eyebrow {
+    font-size: 9px;
+    letter-spacing: 2px;
+  }
+
+  .visualContent h1 {
+    font-size: 39px;
+    letter-spacing: -2px;
+  }
+
+  .description {
+    margin-top: 16px;
+    font-size: 12px;
+    line-height: 1.5;
+  }
+
+  .floatingCard {
+    padding: 9px 11px;
+  }
+
+  .floatingCard strong {
+    font-size: 10px;
+  }
+
+  .floatingCard small {
+    font-size: 8px;
+  }
+
+  .cardOne {
+    top: 18%;
+    right: 5%;
+  }
+
+  .cardTwo {
+    right: 5%;
+    bottom: 8%;
+  }
+
+  .formSection {
+    padding: 40px 24px;
+    align-items: flex-start;
+  }
+
+  .formContainer {
+    max-width: none;
+  }
+
+  .logo {
+    margin-bottom: 22px;
+  }
+
+  .heading h2 {
+    font-size: 26px;
+  }
+
+  .heading p {
+    margin-bottom: 25px;
+  }
+}
+
+/* --------------------------------
+   Reduced Motion
+-------------------------------- */
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
