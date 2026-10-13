@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import "./DashboardPage.css";
 import Auth from "./Auth";
+import Student from "./Student";
+
 
 
 const Icon = ({ type, size = 24 }) => {
@@ -125,7 +127,7 @@ const featureCards = [
     title2: "Schemes",
     description: "Explore central & state schemes for rural development"
   },
-  {
+  { id:2,
     type: "student",
     icon: "student",
     title: "Student",
@@ -194,12 +196,24 @@ const updates = [
 
 function DashboardPage(){
   const[login,setlogin]=useState(false)
+  const[dashbord,setdashbord]=useState(false)
+
   function handleclick(){
     setlogin(true)
   }
   if(login){
     return (<Auth/>)
   }
+
+
+function click(card){
+  if(card.type === "student"){
+    setdashbord(true)
+  }
+}
+if(dashbord){
+  return(<Student/>)
+}
   return (
     <div className="dashboard">
 
@@ -410,7 +424,7 @@ function DashboardPage(){
                 <Icon type={card.icon} size={38} />
               </div>
 
-              <div className="feature-content">
+              <div className="feature-content" onClick={()=>click(card)}>
 
                 <h3>
                   {card.title}
