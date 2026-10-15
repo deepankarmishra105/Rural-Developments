@@ -1,5 +1,5 @@
 import React from 'react'
-import DashboardPage from './DashboardPage'
+import Deepankar from './Deepankar'
 import { Route } from 'lucide-react'
 
 
@@ -7,8 +7,9 @@ import { Route } from 'lucide-react'
 function App() {
   return (
     <div>
-      <DashboardPage />
-     <Route path="/dashboard" element={<DashboardPage />} />
+      <Deepankar/>
+      
+     <Route path="/dashboard" element={<Deepankar />} />
     </div>
   )
 }
