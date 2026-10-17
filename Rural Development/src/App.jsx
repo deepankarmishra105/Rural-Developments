@@ -5,12 +5,16 @@ import ApplyForm from './Government File/ApplyForm'
 import Farmer from "./Farmer corner/Farmer"
 import Deepankar from "./Deepankar"
 import Information from './Village/Information'
+import Landing from './Landing File/Landind'
 
 function App() {
   return (
   //  <Deepankar />
   //  <Farmer />
-  <Information />
+  // <Information />
+  //  <Government />
+   <Landing />
+   
   )
 }
 
