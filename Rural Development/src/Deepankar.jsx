@@ -1,5 +1,14 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import "./Deepankar.css";
+import Auth from "./Auth";
+import Admin from "./Admin pannel/Admin"
+import Government from "./Government File/Government"
+import Student from "./Student"
+import Farmer from "./Farmer corner/Farmer"
+import Jobsskill from "./job and skill/Jobsskills"
+import Village from "./Village/Information"
+import Information from "./Village/Information";
+
 
 const PATHS = {
   home: <><path d="M3 11l9-8 9 8" /><path d="M5 10v10h14V10" /><path d="M10 20v-6h4v6" /></>,
@@ -210,7 +219,7 @@ function SunRays() {
 /* ---------------------------------------------------------------
    Dashboard
 ---------------------------------------------------------------- */
-export default function Dashboard() {
+export default function Deepankar() {
   const [dark, setDark] = useState(() => {
     try {
       const saved = localStorage.getItem("rd-theme");
@@ -218,6 +227,7 @@ export default function Dashboard() {
     } catch (e) { /* storage unavailable */ }
     return window.matchMedia("(prefers-color-scheme: dark)").matches;
   });
+ 
   const [scrolled, setScrolled] = useState(false);
   const [active, setActive] = useState("home");
   const [drawerOpen, setDrawerOpen] = useState(false);
@@ -230,10 +240,40 @@ export default function Dashboard() {
   const [updTab, setUpdTab] = useState("All");
   const [who, setWho] = useState("farmer");
   const [income, setIncome] = useState("1");
+  const [login,setlogin]=useState(false);
+   const[dashboard,setdashboard]=useState(false)
+   const [student,setstudent]=useState(false)
+   const[job,setjob]=useState(false)
+   const[farmer,setfarmer]=useState(false)
+   const[village,setvillage]=useState(false)
+  
 
   const bellRef = useRef(null);
   const searchInputRef = useRef(null);
   const lastFocus = useRef(null);
+
+function Click(c){
+    if( c.title === "Government Schemes"){
+    setdashboard(true)
+    
+  }
+  if(c.title === "Student Corner"){
+   setstudent(true)
+  }
+   if(c.title === "Jobs & Skills" ){
+   setjob(true)
+  }
+   if(c.title === "Farmer Corner" ){
+   setfarmer(true)
+  }
+   if(c.title === "Village Information" ){
+   setvillage(true)
+  }
+
+}
+
+
+
 
   /* theme */
   useEffect(() => {
@@ -251,6 +291,7 @@ export default function Dashboard() {
 
   /* scroll spy */
   useEffect(() => {
+ 
     if (!("IntersectionObserver" in window)) return;
     const io = new IntersectionObserver(
       (entries) => entries.forEach((e) => {
@@ -331,7 +372,28 @@ export default function Dashboard() {
     return list.slice(0, 4);
   }, [who, income]);
 
-  const noJump = (e) => e.preventDefault(); // replace with <Link to="/login"> when you add react-router
+  const noJump = (e)=>{
+    e.preventDefault();
+    setlogin(true)
+  }  // replace with <Link to="/login"> when you add react-router
+ if(login){
+  return <Auth/>
+ }
+ if(dashboard){
+  return <Government/>;
+}
+if(student){
+  return <Student/>
+}
+if(job){
+  return <Jobsskill/>
+}
+if(village){
+  return <Information/>
+}
+if(farmer){
+  return <Farmer/>
+}
 
   return (
     <div className="rd">
@@ -541,11 +603,13 @@ export default function Dashboard() {
         <section className="access" id="access">
           <div className="wrap access-grid">
             {QUICK.map((c) => (
-              <a key={c.title} className="qa" href={c.href} style={{ "--t": c.t, "--a": c.a }}>
-                <span className="go"><Icon name="arrow" /></span>
+              <div key={c.title} className="qa" href={c.href} style={{ "--t": c.t, "--a": c.a }} onClick={()=>Click(c)}>
+                <span  className="go"><Icon name="arrow" /></span>
                 <span className="ic"><Icon name={c.icon} /></span>
-                <div><h3>{c.title}</h3><p>{c.desc}</p></div>
-              </a>
+                <div><h3>{c.title}</h3><p>{c.desc}</p>
+              
+                </div>
+              </div>
             ))}
           </div>
         </section>
@@ -558,7 +622,7 @@ export default function Dashboard() {
                 <h2><Icon name="mega" />Latest Updates</h2>
                 <p>New schemes, openings and deadlines, sorted so you see what matters first.</p>
               </div>
-              <a href="#updates" className="btn-outline btn">View All <Icon name="arrow" /></a>
+              <a href="#updates" className="btn-outline btn" onClick={()=>Click()}>View All <Icon name="arrow" /></a>
             </div>
             <div className="tabs" role="tablist">
               {UPDATE_TABS.map((t) => (

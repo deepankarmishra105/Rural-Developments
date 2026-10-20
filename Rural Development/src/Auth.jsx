@@ -61,7 +61,7 @@ export default function Auth() {
         <div className={styles.formSection}>
           <div className={styles.formContainer}>
             <div className={styles.logo}>
-              <span>✦</span>
+              <span >✦</span>
             </div>
 
             <div className={styles.heading}>

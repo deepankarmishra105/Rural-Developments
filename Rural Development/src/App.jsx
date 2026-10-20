@@ -1,21 +1,15 @@
-import React from 'react'
-import DashboardPage from './DashboardPage'
-import Government from './Government File/Government'
-import ApplyForm from './Government File/ApplyForm'
-import Farmer from "./Farmer corner/Farmer"
-import Deepankar from "./Deepankar"
-import Information from './Village/Information'
-import Landing from './Landing File/Landind'
+import React from 'react';
+import {  Routes, Route } from "react-router-dom";
+import Deepankar from './Deepankar';
 
-function App() {
+export default function App() {
   return (
-  //  <Deepankar />
-  //  <Farmer />
-  // <Information />
-  //  <Government />
-   <Landing />
    
-  )
+      <Routes>
+     
+        <Route path="/" element={<Deepankar />} />
+        
+      </Routes>
+   
+  );
 }
-
-export default App
