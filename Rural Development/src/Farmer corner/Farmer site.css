@@ -292,3 +292,345 @@
 @media (prefers-reduced-motion:reduce){
   .fc *,.fc *::before,.fc *::after{animation:none!important;transition:none!important}
 }
+
+/* ==========================================
+   FARMER CORNER - RESPONSIVE DESIGN
+   Desktop, Tablet and Mobile
+========================================== */
+
+/* Prevent horizontal overflow */
+.fc {
+  width: 100%;
+  max-width: 100%;
+  overflow-x: hidden;
+}
+
+.fc *,
+.fc *::before,
+.fc *::after {
+  box-sizing: border-box;
+}
+
+.fc .wrap {
+  width: min(1200px, calc(100% - 48px));
+  margin-inline: auto;
+}
+
+/* Hero section */
+@media (max-width: 900px) {
+  .fc .hero-in {
+    grid-template-columns: 1fr;
+    gap: 30px;
+  }
+
+  .fc .glass {
+    width: 100%;
+    max-width: 520px;
+  }
+
+  .fc .hero {
+    min-height: auto;
+  }
+
+  .fc .g2,
+  .fc .g2b {
+    grid-template-columns: 1fr;
+  }
+
+  .fc .stats-in {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* Tablet */
+@media (max-width: 768px) {
+  .fc .wrap {
+    width: calc(100% - 32px);
+  }
+
+  .fc .hero-in {
+    padding-block: 55px;
+  }
+
+  .fc .hero h1 {
+    font-size: clamp(38px, 7vw, 58px);
+    line-height: 1.1;
+  }
+
+  .fc .lead {
+    font-size: 16px;
+  }
+
+  .fc .subnav .wrap {
+    display: flex;
+    overflow-x: auto;
+    white-space: nowrap;
+    gap: 10px;
+    scrollbar-width: none;
+  }
+
+  .fc .subnav .wrap::-webkit-scrollbar {
+    display: none;
+  }
+
+  .fc .sec {
+    padding-block: 40px;
+  }
+
+  .fc .sg {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .fc .adv-grid,
+  .fc .todo {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .fc .form2 {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .fc .cal-g {
+    overflow-x: auto;
+  }
+
+  .fc .help {
+    flex-wrap: wrap;
+    gap: 20px;
+  }
+}
+
+/* Mobile */
+@media (max-width: 600px) {
+  .fc .wrap {
+    width: calc(100% - 28px);
+  }
+
+  /* Hero */
+  .fc .hero-in {
+    padding: 45px 0;
+  }
+
+  .fc .hero h1 {
+    font-size: clamp(34px, 9vw, 46px);
+  }
+
+  .fc .hand {
+    display: none;
+  }
+
+  .fc .cta {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .fc .cta a {
+    width: 100%;
+    justify-content: center;
+    text-align: center;
+  }
+
+  .fc .glass {
+    padding: 20px;
+  }
+
+  .fc .temp strong {
+    font-size: 54px;
+  }
+
+  /* Stats */
+  .fc .stats-in {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 16px;
+  }
+
+  .fc .stat {
+    min-width: 0;
+  }
+
+  .fc .stat b {
+    font-size: 21px;
+  }
+
+  .fc .stat small {
+    font-size: 11px;
+  }
+
+  /* Internal navigation */
+  .fc .subnav .wrap {
+    width: 100%;
+    padding-inline: 14px;
+  }
+
+  /* Section headings */
+  .fc .sec-h h2 {
+    font-size: 25px;
+  }
+
+  .fc .sec-h p {
+    font-size: 14px;
+    line-height: 1.7;
+  }
+
+  /* Cards and grids */
+  .fc .sg,
+  .fc .adv-grid,
+  .fc .todo {
+    grid-template-columns: 1fr;
+  }
+
+  .fc .card {
+    padding: 18px;
+    min-width: 0;
+  }
+
+  .fc .row {
+    flex-wrap: wrap;
+  }
+
+  .fc .row .sp {
+    display: none;
+  }
+
+  /* Mandi table */
+  .fc .tw {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .fc .tw table {
+    min-width: 540px;
+  }
+
+  .fc .chart {
+    width: 100%;
+    overflow: hidden;
+  }
+
+  .fc .chart svg {
+    width: 100%;
+    height: auto;
+  }
+
+  /* Crop advisor */
+  .fc .crop {
+    gap: 12px;
+  }
+
+  .fc .facts {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  /* Weather */
+  .fc .days {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 8px;
+  }
+
+  .fc .day {
+    min-width: 0;
+    padding: 12px 5px;
+  }
+
+  .fc .day b,
+  .fc .day small {
+    font-size: 11px;
+  }
+
+  .fc .rain {
+    overflow-x: auto;
+  }
+
+  /* Calculators */
+  .fc .form2 {
+    grid-template-columns: 1fr;
+  }
+
+  .fc .form2 .field {
+    min-width: 0;
+  }
+
+  .fc .out {
+    min-width: 0;
+  }
+
+  /* Crop calendar */
+  .fc .cal {
+    overflow-x: auto;
+  }
+
+  .fc .cal-g {
+    min-width: 650px;
+  }
+
+  /* Crop doctor */
+  .fc .g2b {
+    min-width: 0;
+  }
+
+  .fc .sym button {
+    width: 100%;
+    text-align: left;
+  }
+
+  /* Help section */
+  .fc .help {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 25px 20px;
+  }
+
+  .fc .help .sp {
+    min-width: 0 !important;
+    width: 100%;
+  }
+
+  .fc .help .btn-light {
+    width: 100%;
+    justify-content: center;
+  }
+
+  /* Footer */
+  .fc .foot {
+    font-size: 12px;
+    line-height: 1.7;
+    padding: 20px 0;
+  }
+}
+
+/* Very small phones */
+@media (max-width: 380px) {
+  .fc .wrap {
+    width: calc(100% - 22px);
+  }
+
+  .fc .stats-in {
+    grid-template-columns: 1fr;
+  }
+
+  .fc .days {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .fc .hero h1 {
+    font-size: 33px;
+  }
+
+  .fc .sec-h h2 {
+    font-size: 22px;
+  }
+}
+
+/* Respect reduced motion preferences */
+@media (prefers-reduced-motion: reduce) {
+  .fc *,
+  .fc *::before,
+  .fc *::after {
+    scroll-behavior: auto !important;
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}

@@ -5,6 +5,14 @@ export default function Auth() {
   const [isLogin, setIsLogin] = useState(true);
   const [showPassword, setShowPassword] = useState(false);
 
+  const [message, setMessage] = useState("");
+
+const handleSubmit = (e) => {
+  e.preventDefault();
+  setMessage(isLogin ? "Signed in successfully!" : "Account created successfully!");
+  setTimeout(() => setMessage(""), 3000);
+};
+
   return (
     <main className={styles.page}>
       {/* Background decorations */}
@@ -145,7 +153,7 @@ export default function Auth() {
                 </div>
               )}
 
-              <button type="submit" className={styles.submit}>
+              <button type="submit" className={styles.submit  }  >
                 <span>{isLogin ? "Sign in" : "Create account"}</span>
                 <span className={styles.arrow}>→</span>
               </button>

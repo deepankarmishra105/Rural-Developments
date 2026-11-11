@@ -3,6 +3,8 @@ import {
   Search, MapPin, Briefcase, Clock, IndianRupee, Bookmark, BookmarkCheck,
   X, ArrowRight, GraduationCap, Award, PlayCircle, CheckCircle2, Filter,
   Sprout, Wrench, Laptop, HeartPulse, Users, BadgeCheck, Building2,
+  Sun, Moon, LayoutDashboard, Wheat, TrendingUp, TrendingDown, Minus,
+  Landmark, CloudRain, Droplets, Flame, Menu,
 } from "lucide-react";
 import styles from "./JobsSkills.module.css";
 
@@ -35,10 +37,51 @@ const SKILLS = [
   { id: 6, title: "Spoken English for Jobs", by: "GramNexa Academy", cat: "digital", hours: 30, level: "Beginner", free: false, progress: 0, cert: "Completion badge", desc: "Interview practice and everyday workplace English." },
 ];
 
+/* Sample data for Farmer Corner. Replace with your API. */
+const MANDI = [
+  { crop: "Paddy (common)", mandi: "Balasore", price: 2300, unit: "quintal", change: 1.8 },
+  { crop: "Potato", mandi: "Bhadrak", price: 1850, unit: "quintal", change: -3.2 },
+  { crop: "Tomato", mandi: "Jaleswar", price: 2600, unit: "quintal", change: 6.4 },
+  { crop: "Onion", mandi: "Soro", price: 2200, unit: "quintal", change: 0 },
+  { crop: "Green gram (moong)", mandi: "Balasore", price: 8400, unit: "quintal", change: 0.9 },
+];
+
+const SCHEMES = [
+  { name: "PM-KISAN", note: "Income support of ₹6,000 a year in three instalments.", docs: "Aadhaar, land record, bank passbook" },
+  { name: "Pradhan Mantri Fasal Bima Yojana", note: "Crop insurance against flood, drought and pests.", docs: "Land record, sowing certificate" },
+  { name: "Kisan Credit Card", note: "Low-interest crop loans from your bank.", docs: "Aadhaar, land record, photo" },
+  { name: "Soil Health Card", note: "Free soil test with advice on the right fertiliser.", docs: "Visit your nearest Krushak Sathi" },
+];
+
+const CROP_CALENDAR = [
+  { month: "Oct", task: "Harvest early kharif paddy", on: true },
+  { month: "Nov", task: "Sow pulses and mustard", on: true },
+  { month: "Dec", task: "Irrigate wheat, vegetable beds", on: false },
+  { month: "Jan", task: "Plant potato, apply compost", on: false },
+];
+
+const WEEK = [
+  { d: "Mon", h: 1.5 }, { d: "Tue", h: 2 }, { d: "Wed", h: 0.5 }, { d: "Thu", h: 3 },
+  { d: "Fri", h: 2.5 }, { d: "Sat", h: 4 }, { d: "Sun", h: 1 },
+];
+
 const TYPES = ["All types", "Full-time", "Part-time", "Contract"];
 const SORTS = ["Newest", "Most openings", "Closing soon"];
 
+const rupee = (n) => "₹" + n.toLocaleString("en-IN");
+
+function initialTheme() {
+  try {
+    const s = localStorage.getItem("rd-theme");
+    if (s) return s === "dark";
+  } catch (e) { /* ignore */ }
+  return typeof window !== "undefined" && window.matchMedia
+    ? window.matchMedia("(prefers-color-scheme: dark)").matches
+    : false;
+}
+
 export default function JobsSkills() {
+  const [dark, setDark] = useState(initialTheme);
   const [tab, setTab] = useState("jobs");
   const [query, setQuery] = useState("");
   const [cat, setCat] = useState("all");
@@ -49,6 +92,18 @@ export default function JobsSkills() {
   const [enrolled, setEnrolled] = useState(() => new Set([2, 5]));
   const [active, setActive] = useState(null);
   const [toast, setToast] = useState("");
+  const [menuOpen, setMenuOpen] = useState(false);
+
+  const go = (id) => {
+    setTab(id);
+    setMenuOpen(false);
+    setTimeout(() => document.getElementById("content")?.scrollIntoView({ behavior: "smooth", block: "start" }), 0);
+  };
+
+  useEffect(() => {
+    document.documentElement.setAttribute("data-theme", dark ? "dark" : "light");
+    try { localStorage.setItem("rd-theme", dark ? "dark" : "light"); } catch (e) { /* ignore */ }
+  }, [dark]);
 
   useEffect(() => {
     if (!toast) return;
@@ -90,15 +145,35 @@ export default function JobsSkills() {
 
   const reset = () => { setQuery(""); setCat("all"); setType("All types"); };
   const count = tab === "jobs" ? jobs.length : skills.length;
+  const showFilters = tab === "jobs" || tab === "skills";
+
+  const TABS = [
+    { id: "jobs", label: "Jobs", icon: Briefcase, n: JOBS.length },
+    { id: "skills", label: "Skill training", icon: GraduationCap, n: SKILLS.length },
+    { id: "farmer", label: "Farmer Corner", icon: Wheat },
+    { id: "dash", label: "Dashboard", icon: LayoutDashboard },
+    { id: "mine", label: "My activity", icon: BookmarkCheck, n: saved.size + applied.size },
+  ];
 
   return (
     <main className={styles.page}>
+      {/* NAV */}
+      
+            <button
+              className={styles.burger}
+              onClick={() => setMenuOpen((o) => !o)}
+              aria-label="Toggle menu"
+              aria-expanded={menuOpen}
+            >
+              {menuOpen ? <X size={20} /> : <Menu size={20} />}
+            </button>
+          
       {/* HERO */}
       <section className={styles.hero}>
         <div className={styles.heroInner}>
-          <h1 className={styles.title}>Jobs &amp; Skills</h1>
+          <h1 className={styles.title}>Work and training, close to your village</h1>
           <p className={styles.subtitle}>
-            Find work near your village and free training that gets you hired.
+            Find jobs near home, learn free skills, and track your farm prices in one place.
           </p>
 
           <div className={styles.searchBar} role="search">
@@ -106,13 +181,13 @@ export default function JobsSkills() {
             <input
               value={query}
               onChange={(e) => setQuery(e.target.value)}
-              placeholder={tab === "jobs" ? "Search jobs, employers, locations…" : "Search courses and training programs…"}
+              placeholder={tab === "skills" ? "Search courses and training programs…" : "Search jobs, employers, locations…"}
               aria-label="Search"
             />
             {query && (
               <button className={styles.clear} onClick={() => setQuery("")} aria-label="Clear search"><X size={16} /></button>
             )}
-            <button className={styles.searchBtn}>Search</button>
+            <button className={styles.searchBtn} onClick={() => !showFilters && setTab("jobs")}>Search</button>
           </div>
 
           <div className={styles.stats}>
@@ -124,20 +199,8 @@ export default function JobsSkills() {
       </section>
 
       {/* CONTROLS */}
-      <section className={styles.shell}>
-        <div className={styles.tabs} role="tablist">
-          <button role="tab" aria-selected={tab === "jobs"} className={tab === "jobs" ? styles.tabOn : ""} onClick={() => setTab("jobs")}>
-            <Briefcase size={18} /> Jobs <em>{JOBS.length}</em>
-          </button>
-          <button role="tab" aria-selected={tab === "skills"} className={tab === "skills" ? styles.tabOn : ""} onClick={() => setTab("skills")}>
-            <GraduationCap size={18} /> Skill training <em>{SKILLS.length}</em>
-          </button>
-          <button role="tab" aria-selected={tab === "mine"} className={tab === "mine" ? styles.tabOn : ""} onClick={() => setTab("mine")}>
-            <BookmarkCheck size={18} /> My activity <em>{saved.size + applied.size}</em>
-          </button>
-        </div>
-
-        {tab !== "mine" && (
+      <section className={styles.shell} id="content">
+        {showFilters && (
           <>
             <div className={styles.chips}>
               {CATEGORIES.map(({ id, label, icon: Icon }) => (
@@ -168,7 +231,7 @@ export default function JobsSkills() {
           jobs.length ? (
             <div className={styles.grid}>
               {jobs.map((j) => (
-                <article key={j.id} className={styles.card}>
+                <article key={j.id} className={`${styles.card} ${styles[`a_${j.cat}`]}`}>
                   <header>
                     <div className={`${styles.logo} ${styles[`c_${j.cat}`]}`}><Briefcase size={22} /></div>
                     <div className={styles.cardHead}>
@@ -184,15 +247,15 @@ export default function JobsSkills() {
                       {saved.has(j.id) ? <BookmarkCheck size={20} /> : <Bookmark size={20} />}
                     </button>
                   </header>
+                  <div className={styles.pay}><IndianRupee size={16} />{j.pay.replace("₹", "")}</div>
                   <ul className={styles.meta}>
                     <li><MapPin size={15} />{j.loc}</li>
-                    <li><IndianRupee size={15} />{j.pay}</li>
                     <li><Clock size={15} />{j.type} · {j.posted}</li>
                   </ul>
                   <div className={styles.tags}>{j.tags.map((t) => <span key={t}>{t}</span>)}</div>
                   <footer>
                     <span className={styles.openings}><Users size={15} /> {j.openings} openings</span>
-                    <button className={styles.primary} onClick={() => setActive(j)}>
+                    <button className={applied.has(j.id) ? styles.ghost : styles.primary} onClick={() => setActive(j)}>
                       {applied.has(j.id) ? "Applied" : "View details"} <ArrowRight size={15} />
                     </button>
                   </footer>
@@ -209,7 +272,7 @@ export default function JobsSkills() {
               {skills.map((s) => {
                 const on = enrolled.has(s.id);
                 return (
-                  <article key={s.id} className={styles.card}>
+                  <article key={s.id} className={`${styles.card} ${styles[`a_${s.cat}`]}`}>
                     <header>
                       <div className={`${styles.logo} ${styles[`c_${s.cat}`]}`}><GraduationCap size={22} /></div>
                       <div className={styles.cardHead}>
@@ -244,6 +307,75 @@ export default function JobsSkills() {
             </div>
           ) : <Empty onReset={reset} />
         )}
+
+        {/* FARMER CORNER */}
+        {tab === "farmer" && (
+          <div className={styles.farmer}>
+            <div className={styles.advisory}>
+              <div>
+                <h2>Today’s farm advisory</h2>
+                <p>Light rain expected this evening in Balasore. Hold off on spraying and cover harvested paddy.</p>
+              </div>
+              <ul>
+                <li><CloudRain size={18} /> 70% rain</li>
+                <li><Droplets size={18} /> 82% humidity</li>
+                <li><Flame size={18} /> 31°C high</li>
+              </ul>
+            </div>
+
+            <section className={styles.panel}>
+              <h2><TrendingUp size={18} /> Mandi prices</h2>
+              <p className={styles.note}>Sample prices. Connect your mandi data source to show live rates.</p>
+              <div className={styles.table}>
+                {MANDI.map((m) => {
+                  const Tr = m.change > 0 ? TrendingUp : m.change < 0 ? TrendingDown : Minus;
+                  const tone = m.change > 0 ? styles.up : m.change < 0 ? styles.down : styles.flat;
+                  return (
+                    <div key={m.crop} className={styles.trow}>
+                      <div><strong>{m.crop}</strong><span>{m.mandi} mandi</span></div>
+                      <div className={styles.price}>{rupee(m.price)}<small>/{m.unit}</small></div>
+                      <span className={`${styles.delta} ${tone}`}><Tr size={14} /> {Math.abs(m.change)}%</span>
+                    </div>
+                  );
+                })}
+              </div>
+            </section>
+
+            <section className={styles.panel}>
+              <h2><Landmark size={18} /> Schemes you can apply for</h2>
+              <div className={styles.schemes}>
+                {SCHEMES.map((s) => (
+                  <div key={s.name} className={styles.scheme}>
+                    <h3>{s.name}</h3>
+                    <p>{s.note}</p>
+                    <span>Keep ready: {s.docs}</span>
+                  </div>
+                ))}
+              </div>
+            </section>
+
+            <section className={styles.panel}>
+              <h2><Sprout size={18} /> Crop calendar</h2>
+              <ol className={styles.calendar}>
+                {CROP_CALENDAR.map((c) => (
+                  <li key={c.month} className={c.on ? styles.now : ""}>
+                    <b>{c.month}</b><span>{c.task}</span>
+                  </li>
+                ))}
+              </ol>
+              <button className={styles.primary} onClick={() => { setCat("agri"); setTab("jobs"); }}>
+                See farm jobs <ArrowRight size={15} />
+              </button>
+            </section>
+          </div>
+        )}
+
+        {/* DASHBOARD */}
+        {tab === "dash" && <Dashboard
+          applied={applied.size} saved={saved.size}
+          enrolled={SKILLS.filter((s) => enrolled.has(s.id))}
+          onOpen={setActive}
+        />}
 
         {/* MY ACTIVITY */}
         {tab === "mine" && (
@@ -315,6 +447,70 @@ export default function JobsSkills() {
 
       {toast && <div className={styles.toast} role="status">{toast}</div>}
     </main>
+  );
+}
+
+function Dashboard({ applied, saved, enrolled, onOpen }) {
+  const profile = 72;
+  const R = 44, C = 2 * Math.PI * R;
+  const max = Math.max(...WEEK.map((w) => w.h));
+  const total = WEEK.reduce((a, w) => a + w.h, 0);
+  const picks = [...JOBS].sort((a, b) => b.openings - a.openings).slice(0, 3);
+  const kpis = [
+    { label: "Applications", value: applied, icon: BadgeCheck },
+    { label: "Saved jobs", value: saved, icon: Bookmark },
+    { label: "Courses running", value: enrolled.length, icon: GraduationCap },
+    { label: "Hours this week", value: total, icon: Clock },
+  ];
+  return (
+    <div className={styles.dash}>
+      <div className={styles.kpis}>
+        {kpis.map(({ label, value, icon: Icon }) => (
+          <div key={label} className={styles.kpi}>
+            <Icon size={20} />
+            <strong>{value}</strong>
+            <span>{label}</span>
+          </div>
+        ))}
+      </div>
+
+      <section className={`${styles.panel} ${styles.chart}`}>
+        <h2>Learning hours this week</h2>
+        <svg viewBox="0 0 280 130" role="img" aria-label="Bar chart of daily learning hours">
+          {WEEK.map((w, i) => {
+            const h = (w.h / max) * 88;
+            return (
+              <g key={w.d}>
+                <rect x={10 + i * 38} y={100 - h} width="26" height={h} rx="6" className={w.h === max ? styles.barTop : styles.bar} />
+                <text x={23 + i * 38} y="120" textAnchor="middle">{w.d}</text>
+              </g>
+            );
+          })}
+        </svg>
+      </section>
+
+      <section className={`${styles.panel} ${styles.ringBox}`}>
+        <svg viewBox="0 0 110 110" role="img" aria-label={`Profile ${profile}% complete`}>
+          <circle cx="55" cy="55" r={R} className={styles.ringBg} />
+          <circle cx="55" cy="55" r={R} className={styles.ringFg} strokeDasharray={C} strokeDashoffset={C * (1 - profile / 100)} transform="rotate(-90 55 55)" />
+          <text x="55" y="61" textAnchor="middle">{profile}%</text>
+        </svg>
+        <div>
+          <h2>Profile strength</h2>
+          <p>Add your skills and a phone number to reach 100%. Employers reply faster to complete profiles.</p>
+        </div>
+      </section>
+
+      <section className={`${styles.panel} ${styles.picks}`}>
+        <h2>Jobs hiring the most people</h2>
+        {picks.map((j) => (
+          <div key={j.id} className={styles.row}>
+            <div><strong>{j.title}</strong><span>{j.loc} · {j.openings} openings</span></div>
+            <button className={styles.ghost} onClick={() => onOpen(j)}>View</button>
+          </div>
+        ))}
+      </section>
+    </div>
   );
 }
 

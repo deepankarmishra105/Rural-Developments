@@ -1,15 +1,19 @@
 import React from 'react';
-import {  Routes, Route } from "react-router-dom";
+import { Routes, Route } from 'react-router-dom';
 import Deepankar from './Deepankar';
 
-export default function App() {
+
+function App() {
   return (
+    <Routes>
+      <Route path="/" element={<Deepankar />} />
+       <Route path="/dashboard" element={<Deepankar />} />
+      
+  
+     </Routes> 
    
-      <Routes>
-     
-        <Route path="/" element={<Deepankar />} />
-        
-      </Routes>
    
   );
 }
+
+export default App;

@@ -205,36 +205,6 @@ function Count({ to, suffix = '', fmt }) {
   return <>{fmt ? fmt(v) : Math.round(v).toLocaleString('en-IN')}{suffix}</>;
 }
 
-function FarmerNav({ dark, onTheme }) {
-  const [open, setOpen] = useState(false);
-  const links = [['home', 'Home'], ['grid', 'Schemes'], ['cap', 'Students'], ['bag', 'Jobs'], ['sprout', 'Farmers'], ['cog', 'Services'], ['bell', 'Notifications']];
-  return (
-    <header className="nav">
-      <div className="nav-in">
-        <a className="brand" href="/" aria-label="Rural Development home">
-          <span className="logo">
-            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#0f4d24" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M5 19c0-9 5-14 15-14 0 10-5 15-15 15z" /><path d="M5 19l8-8" /></svg>
-          </span>
-          <span><b>Rural <i>Development</i></b><small>Connecting Villages to Opportunities</small></span>
-        </a>
-        <nav className={`menu ${open ? 'open' : ''}`} aria-label="Main">
-          {links.map(([ic, t]) => (
-            <a key={t} href="#" className={t === 'Farmers' ? 'on' : ''} aria-current={t === 'Farmers' ? 'page' : undefined} onClick={(e) => e.preventDefault()}>
-              <Icon n={ic} s={18} />{t}
-              {t === 'Notifications' && <span className="badge">3</span>}
-            </a>
-          ))}
-        </nav>
-        <div className="nav-act">
-          <button className="round" onClick={onTheme} aria-label="Switch light or dark theme"><Icon n={dark ? 'sun' : 'moon'} /></button>
-          
-          <a className="btn-solid" href="#">Farmers</a>
-          <button className="round burger" aria-label="Open menu" aria-expanded={open} onClick={() => setOpen((o) => !o)}><Icon n="menu" /></button>
-        </div>
-      </div>
-    </header>
-  );
-}
 
 function Hero() {
   const today = new Date().toLocaleDateString('en-IN', { weekday: 'long', day: 'numeric', month: 'short' });
@@ -886,8 +856,7 @@ export default function Farmer() {
 
   return (
     <div className="fc" data-theme={theme || undefined}>
-      <FarmerNav dark={dark} onTheme={toggleTheme} />
-      <Hero />
+           <Hero />
       <StatsAndTicker />
       <SubNav />
 

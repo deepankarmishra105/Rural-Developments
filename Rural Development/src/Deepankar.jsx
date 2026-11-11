@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import "./Deepankar.css";
 import Auth from "./Auth";
 import Admin from "./Admin pannel/Admin"
@@ -8,6 +9,7 @@ import Farmer from "./Farmer corner/Farmer"
 import Jobsskill from "./job and skill/Jobsskills"
 import Village from "./Village/Information"
 import Information from "./Village/Information";
+
 
 
 const PATHS = {
@@ -50,12 +52,12 @@ function Icon({ name, size, style }) {
    Data (replace these with your real data or API responses)
 ---------------------------------------------------------------- */
 const NAV = [
-  { key: "home", label: "Home", drawer: "Home", href: "#home", icon: "home" },
-  { key: "schemes", label: "Schemes", drawer: "Government schemes", href: "#access", icon: "grid" },
-  { key: "students", label: "Students", drawer: "Students", href: "#access", icon: "cap" },
-  { key: "jobs", label: "Jobs", drawer: "Jobs and skills", href: "#updates", icon: "brief" },
-  { key: "farmers", label: "Farmers", drawer: "Farmers", href: "#farmers", icon: "sprout" },
-  { key: "services", label: "Services", drawer: "Services", href: "#checker", icon: "cog" },
+  { key: "home", label: "Home", drawer: "Home", href: "#home", icon: "home" ,path:"/" },
+  { key: "schemes", label: "Schemes", drawer: "Government schemes", href: "#access", icon: "grid" ,path: "/schemes"},
+  { key: "students", label: "Students", drawer: "Students", href: "#access", icon: "cap",path: "/student" },
+  { key: "jobs", label: "Jobs", drawer: "Jobs and skills", href: "#updates", icon: "brief" ,path: "/jobs" },
+  { key: "farmers", label: "Farmers", drawer: "Farmers", href: "#farmers", icon: "sprout" ,path: "/farmer"},
+  { key: "services", label: "services", drawer: "services", href: "#checker", icon: "cog" ,},
 ];
 const TABBAR = ["home", "schemes", "jobs", "farmers", "services"];
 const SECTION_TO_NAV = { home: "home", access: "schemes", updates: "jobs", farmers: "farmers", checker: "services" };
@@ -220,6 +222,7 @@ function SunRays() {
    Dashboard
 ---------------------------------------------------------------- */
 export default function Deepankar() {
+  const navigate = useNavigate();
   const [dark, setDark] = useState(() => {
     try {
       const saved = localStorage.getItem("rd-theme");
@@ -409,12 +412,21 @@ if(farmer){
           </a>
 
           <nav className="nav" aria-label="Main">
-            {NAV.map((n) => (
-              <a key={n.key} href={n.href} className={active === n.key ? "active" : ""} onClick={() => setActive(n.key)}>
-                <Icon name={n.icon} />{n.label}
-              </a>
-            ))}
-          </nav>
+             {NAV.map((n) => (
+                <a
+                     key={n.key}
+               href={n.path}
+                className={active === n.key ? "active" : ""}
+                      onClick={(e) => {
+                 e.preventDefault();
+                         setActive(n.key);
+         navigate(n.path);
+      }}
+    >
+      <Icon name={n.icon} />{n.label}
+    </a>
+  ))}
+</nav>
 
           <div className="actions">
             
@@ -546,7 +558,7 @@ if(farmer){
 
           <div className="wrap hero-in">
             <div>
-              <h1><span>Empowering</span><span>Rural India</span></h1>
+              < h1><span>Empowering</span><span>Rural India</span></h1>
               <h2>Connecting Villages to Opportunities</h2>
               <p className="lead">
                 Access government schemes, education, jobs, agriculture support and essential services, all in one place for a brighter tomorrow.

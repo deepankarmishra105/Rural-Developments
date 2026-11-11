@@ -71,7 +71,9 @@ const VILLAGES = [
   { id: 'v6', name: 'Chak Mohri', state: 'Punjab', district: 'Ludhiana', block: 'Khanna', pop: 3280, hh: 590, area: 690, sexRatio: 897, sarpanch: 'S. Harjinder Singh', town: 'Khanna', townKm: 9, rail: 'Khanna', railKm: 10, q: 0.88, seed: 6 },
   { id: 'v7', name: 'Joypur', state: 'West Bengal', district: 'Bankura', block: 'Onda', pop: 2540, hh: 540, area: 488, sexRatio: 962, sarpanch: 'Smt. Mamata Mondal', town: 'Bankura', townKm: 26, rail: 'Bankura', railKm: 27, q: 0.6, seed: 7 },
   { id: 'v8', name: 'Hosahalli', state: 'Karnataka', district: 'Mandya', block: 'Maddur', pop: 2980, hh: 640, area: 572, sexRatio: 975, sarpanch: 'Shri Nagaraj Gowda', town: 'Mandya', townKm: 15, rail: 'Maddur', railKm: 6, q: 0.76, seed: 8 },
+  
 ];
+
 
 const IND = [
   { k: 'literacy', n: 'Literacy' },
@@ -272,39 +274,7 @@ function Radar({ series }) {
   );
 }
 
-/* =========================================================
-   NAVBAR  (replace with your dashboard Navbar if you like)
-   ========================================================= */
-function InfoNav({ dark, onTheme }) {
-  const [open, setOpen] = useState(false);
-  const links = [['home', 'Home'], ['grid', 'Schemes'], ['cap', 'Students'], ['bag', 'Jobs'], ['sprout', 'Farmers'], ['cog', 'Services']];
-  return (
-    <header className="nav">
-      <div className="nav-in">
-        <a className="brand" href="/" aria-label="Rural Development home">
-          <span className="logo">
-            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#0f4d24" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M5 19c0-9 5-14 15-14 0 10-5 15-15 15z" /><path d="M5 19l8-8" /></svg>
-          </span>
-          <span><b><i>Rural</i> Development</b><small>Connecting Villages to Opportunities</small></span>
-        </a>
-        <nav className={`menu ${open ? 'open' : ''}`} aria-label="Main">
-          {links.map(([ic, t]) => (
-            <a key={t} href="#" className={t === 'Home' ? 'on' : ''} aria-current={t === 'Home' ? 'page' : undefined} onClick={(e) => e.preventDefault()}>
-              <Icon n={ic} s={18} />{t}
-            </a>
-          ))}
-        </nav>
-        <div className="nav-act">
-          <button className="round" aria-label="Notifications, 3 new"><Icon n="bell" /><span className="badge">3</span></button>
-          <button className="round" onClick={onTheme} aria-label="Switch light or dark theme"><Icon n={dark ? 'sun' : 'moon'} /></button>
-                    
-          <a className="btn-solid" href="#">Villagers</a>
-          <button className="round burger" aria-label="Open menu" aria-expanded={open} onClick={() => setOpen((o) => !o)}><Icon n="menu" /></button>
-        </div>
-      </div>
-    </header>
-  );
-}
+
 
 /* =========================================================
    HERO + STATS + SUBNAV
@@ -312,6 +282,71 @@ function InfoNav({ dark, onTheme }) {
 const HOUSES = [[170, 520, 1, '#c2553f'], [262, 536, 1.25, '#b8472f'], [380, 514, 0.85, '#d0683f'], [470, 530, 1.1, '#c2553f'], [590, 518, 0.9, '#a94632'],
   [700, 534, 1.2, '#c2553f'], [815, 516, 0.85, '#d0683f'], [1180, 520, 1, '#b8472f'], [1285, 536, 1.2, '#c2553f'], [1390, 516, 0.9, '#d0683f']];
 const TREES = [[120, 510, 1], [330, 506, 0.8], [545, 512, 1.1], [760, 508, 0.9], [1120, 512, 1.1], [1235, 506, 0.85], [1350, 512, 1]];
+
+function VillagePicker({ v, all, onPick }) {
+  const [state, setState] = useState(v.state);
+  const [district, setDistrict] = useState('');
+  const [q, setQ] = useState('');
+  const [open, setOpen] = useState(false);
+  useEffect(() => { setState(v.state); }, [v.state]);
+
+  const districts = useMemo(() => [...new Set(all.filter((x) => x.state === state).map((x) => x.district))].sort(), [all, state]);
+  const term = q.trim().toLowerCase();
+  const matches = useMemo(
+    () => all.filter((x) => x.state === state && (!district || x.district === district) && x.name.toLowerCase().includes(term)).slice(0, 50),
+    [all, state, district, term]
+  );
+  const exact = matches.some((m) => m.name.toLowerCase() === term);
+
+  const pick = (x) => { onPick(x); setQ(''); setOpen(false); };
+  const addOwn = () => pick(makeVillage(state, district || 'Your district', q.trim().replace(/\b\w/g, (c) => c.toUpperCase())));
+
+  const box = { width: '100%', padding: '11px 12px', borderRadius: 12, border: '1.5px solid #d5dbe6', background: '#fff', color: '#12284a', fontSize: 14, fontFamily: 'inherit' };
+  const item = { display: 'flex', justifyContent: 'space-between', gap: 8, width: '100%', padding: '10px 12px', border: 0, background: 'transparent', color: '#12284a', fontSize: 14, textAlign: 'left', cursor: 'pointer', fontFamily: 'inherit' };
+
+  return (
+    <>
+      <label htmlFor="selState">State</label>
+      <select id="selState" value={state} onChange={(e) => { setState(e.target.value); setDistrict(''); setQ(''); setOpen(true); }}>
+        {STATES.map((s) => <option key={s}>{s}</option>)}
+      </select>
+
+      {districts.length > 0 && (
+        <>
+          <label htmlFor="selDist">District</label>
+          <select id="selDist" value={district} onChange={(e) => { setDistrict(e.target.value); setOpen(true); }}>
+            <option value="">All districts</option>
+            {districts.map((d) => <option key={d}>{d}</option>)}
+          </select>
+        </>
+      )}
+
+      <label htmlFor="vilSearch">Village (search or choose)</label>
+      <div style={{ position: 'relative' }}>
+        <input id="vilSearch" style={box} value={q} autoComplete="off" placeholder={`Search village in ${state}`}
+          onFocus={() => setOpen(true)} onBlur={() => setTimeout(() => setOpen(false), 120)}
+          onChange={(e) => { setQ(e.target.value); setOpen(true); }} />
+        {open && (
+          <div style={{ position: 'absolute', zIndex: 30, left: 0, right: 0, top: '100%', marginTop: 6, maxHeight: 220, overflowY: 'auto', background: '#fff', borderRadius: 12, boxShadow: '0 12px 30px rgba(0,0,0,.25)' }}>
+            {matches.map((x) => (
+              <button key={x.id} type="button" style={item} onMouseDown={(e) => { e.preventDefault(); pick(x); }}>
+                <b>{x.name}</b><span style={{ color: '#6b7a90' }}>{x.district}</span>
+              </button>
+            ))}
+            {q.trim().length >= 2 && !exact && (
+              <button type="button" style={{ ...item, color: '#17803d', fontWeight: 700 }} onMouseDown={(e) => { e.preventDefault(); addOwn(); }}>
+                + Use “{q.trim()}” as my village
+              </button>
+            )}
+            {!matches.length && q.trim().length < 2 && <div style={{ padding: 12, color: '#6b7a90', fontSize: 13 }}>No villages listed yet. Type your village name.</div>}
+          </div>
+        )}
+      </div>
+      <p style={{ fontSize: 12.5, marginTop: 8, opacity: 0.8 }}>Showing: <b>{v.name}</b>, {v.district}, {v.state}</p>
+    </>
+  );
+}
+
 
 function Hero({ v, d, states, list, onState, onVillage }) {
   const [g, label] = grade(d.score);
@@ -362,10 +397,10 @@ function Hero({ v, d, states, list, onState, onVillage }) {
           <span className="pill"><Icon n="home" s={16} />Village Information</span>
           <h1>Know your village,<br />inside out</h1>
           <p className="lead">People, facilities, development score, ongoing projects and a live map. Find out where your village stands and what it needs next.</p>
-          <div className="cta">
-            <a className="btn-solid lg" href="#facilities" onClick={(e) => goTo(e, 'facilities')}>Explore facilities</a>
-            <a className="btn-light lg" href="#report" onClick={(e) => goTo(e, 'report')}>Report a problem</a>
-          </div>
+           <div className="hero-actions" style={{ display: 'flex', gap: 14, flexWrap: 'wrap', marginTop: 24, position: 'relative', zIndex: 5 }}>
+  <a className="btn-solid lg" href="#facilities" onClick={(e) => goTo(e, 'facilities')}>Explore facilities</a>
+  <a className="btn-light lg" href="#report" onClick={(e) => goTo(e, 'report')}>Report a problem</a>
+</div>
         </div>
 
         <aside className="glass" aria-label="Choose your village">
@@ -732,44 +767,110 @@ const COMMUNITY = [
 ];
 
 function Report({ v, toast }) {
+  const KEY = 'rd-reports';
   const [cat, setCat] = useState(NEEDS[0]);
   const [text, setText] = useState('');
-  const [mine, setMine] = useState([]);
+  const [name, setName] = useState('');
+  const [phone, setPhone] = useState('');
+  const [done, setDone] = useState(null);
+  const [mine, setMine] = useState(() => {
+    try { return JSON.parse(localStorage.getItem(KEY)) || []; } catch { return []; }
+  });
   const [issues, setIssues] = useState(COMMUNITY.map((i) => ({ ...i, voted: false })));
-  const submit = () => {
-    if (text.trim().length < 10) { toast('Please describe the problem in a few words'); return; }
-    const id = `VIL-${new Date().getFullYear()}-${Math.floor(1000 + Math.random() * 9000)}`;
-    setMine((m) => [{ id, cat, text: text.trim(), step: 0, at: new Date().toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' }) }, ...m]);
-    setText('');
-    toast(`Report submitted. Your ticket is ${id}`);
+
+  const save = (list) => {
+    setMine(list);
+    try { localStorage.setItem(KEY, JSON.stringify(list)); } catch { /* ignore */ }
   };
+
+  const field = {
+    width: '100%', padding: '12px 14px', borderRadius: 12, fontSize: 14, fontFamily: 'inherit',
+    border: '1.5px solid var(--line)', background: 'var(--surface-2)', color: 'var(--ink)', outline: 'none',
+  };
+  const label = { display: 'block', fontSize: 13, fontWeight: 700, marginBottom: 6, color: 'var(--ink)' };
+
+  const submit = () => {
+    if (text.trim().length < 10) { toast('Please describe the problem in at least 10 characters'); return; }
+    const id = `VIL-${new Date().getFullYear()}-${Math.floor(1000 + Math.random() * 9000)}`;
+    const report = {
+      id, villageId: v.id, village: v.name, cat, text: text.trim(),
+      name: name.trim() || 'Anonymous', phone: phone.trim(), step: 0,
+      at: new Date().toLocaleString('en-IN', { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit' }),
+    };
+    save([report, ...mine]);
+    setDone(id);
+    setText(''); setName(''); setPhone('');
+    toast(`Successfully submitted. Ticket ${id}`);
+  };
+
+  const remove = (id) => save(mine.filter((r) => r.id !== id));
   const vote = (id) => setIssues((l) => l.map((i) => (i.id === id ? { ...i, voted: !i.voted, votes: i.votes + (i.voted ? -1 : 1) } : i)).sort((a, b) => b.votes - a.votes));
+  const myHere = mine.filter((r) => r.villageId === v.id);
+
   return (
     <section className="sec" id="report">
       <SectionHead icon="alert" title="Report an issue">See something broken in {v.name}? Tell the Gram Panchayat, and back the problems your neighbours have already raised.</SectionHead>
       <div className="g2 eq">
         <div className="card">
           <h3>New report</h3>
-          <div className="form" style={{ marginTop: 14 }}>
-            <div className="field"><label htmlFor="rcat">What is the problem about?</label>
-              <select id="rcat" className="input" value={cat} onChange={(e) => setCat(e.target.value)}>{NEEDS.map((n) => <option key={n}>{n}</option>)}</select></div>
-            <div className="field"><label htmlFor="rtxt">Describe it</label>
-              <textarea id="rtxt" className="input" placeholder="For example: the hand pump near the temple has not worked for two weeks." value={text} onChange={(e) => setText(e.target.value)} /></div>
+
+          {done && (
+            <div role="status" style={{ marginTop: 14, padding: '12px 14px', borderRadius: 12, background: 'var(--green-soft)', color: 'var(--green)', fontWeight: 700, fontSize: 14 }}>
+              ✓ Successfully submitted! Your ticket number is {done}
+            </div>
+          )}
+
+          <div style={{ display: 'grid', gap: 14, marginTop: 14 }}>
+            <div>
+              <label style={label} htmlFor="rcat">What is the problem about?</label>
+              <select id="rcat" style={field} value={cat} onChange={(e) => setCat(e.target.value)}>
+                {NEEDS.map((n) => <option key={n}>{n}</option>)}
+              </select>
+            </div>
+
+            <div>
+              <label style={label} htmlFor="rtxt">Describe the issue</label>
+              <textarea id="rtxt" rows={5} maxLength={500} style={{ ...field, resize: 'vertical', minHeight: 110 }}
+                placeholder="For example: the hand pump near the temple has not worked for two weeks."
+                value={text} onChange={(e) => setText(e.target.value)} />
+              <small style={{ color: 'var(--muted)' }}>{text.length}/500</small>
+            </div>
+
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(150px,1fr))', gap: 12 }}>
+              <div>
+                <label style={label} htmlFor="rname">Your name (optional)</label>
+                <input id="rname" style={field} value={name} onChange={(e) => setName(e.target.value)} placeholder="Name" />
+              </div>
+              <div>
+                <label style={label} htmlFor="rphone">Phone (optional)</label>
+                <input id="rphone" style={field} inputMode="tel" maxLength={10} value={phone}
+                  onChange={(e) => setPhone(e.target.value.replace(/\D/g, ''))} placeholder="10-digit number" />
+              </div>
+            </div>
+
             <button className="btn-solid" onClick={submit}><Icon n="plus" s={18} />Submit report</button>
-            <p className="note">Demo only: reports stay on this page and are not sent anywhere. Connect the form to your backend or your state's grievance portal.</p>
+            <p className="note">Reports are saved in this browser. Connect the form to your backend or your state's grievance portal to send them to the Gram Panchayat.</p>
           </div>
-          {mine.length > 0 && (
-            <div className="iss">
-              {mine.map((t) => (
+
+          {myHere.length > 0 && (
+            <div className="iss" style={{ marginTop: 18 }}>
+              <h3 style={{ fontSize: 15 }}>Your submitted reports ({myHere.length})</h3>
+              {myHere.map((t) => (
                 <div className="tk fade" key={t.id}>
-                  <div className="row"><span className="id">{t.id}</span><span className="sp" /><span className="tag">{t.cat} · {t.at}</span></div>
+                  <div className="row">
+                    <span className="id">{t.id}</span><span className="sp" />
+                    <span className="tag">{t.cat} · {t.at}</span>
+                  </div>
                   <p style={{ fontSize: 13.5, marginTop: 6, fontWeight: 600 }}>{t.text}</p>
+                  <small style={{ color: 'var(--muted)' }}>By {t.name}{t.phone ? ` · ${t.phone}` : ''}</small>
                   <div className="steps">{STEPS.map((s, i) => <div key={s} className={i <= t.step ? 'done' : ''}>{s}</div>)}</div>
+                  <button className="btn-line" style={{ marginTop: 10 }} onClick={() => remove(t.id)}>Delete</button>
                 </div>
               ))}
             </div>
           )}
         </div>
+
         <div className="card">
           <h3>Raised by neighbours</h3>
           <p className="note" style={{ marginTop: 4 }}>Tap the button if you face the same problem. The most common issues rise to the top.</p>
@@ -818,11 +919,10 @@ export default function Information() {
   const toggleTheme = () => { const n = dark ? 'light' : 'dark'; setTheme(n); try { localStorage.setItem('rd-theme', n); } catch { /* ignore */ } };
 
   return (
-    <div className="vi" data-theme={theme || undefined}>
-      <InfoNav dark={dark} onTheme={toggleTheme} />
-      <Hero v={v} d={d} states={states} list={list} onState={(s) => setVid(VILLAGES.find((x) => x.state === s).id)} onVillage={setVid} />
-      <Stats />
-      <SubNav />
+  <div className="vi" data-theme={theme || undefined}>
+  <Hero v={v} d={d} states={states} list={list} onState={(s) => setVid(VILLAGES.find((x) => x.state === s).id)} onVillage={setVid} />
+  <Stats />
+  <SubNav />
 
       <main className="wrap" key={v.id}>
         <Overview v={v} d={d} toast={toast} />
