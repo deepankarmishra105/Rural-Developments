@@ -1,21 +1,31 @@
 import { useState } from "react";
+import { useAuth0 } from "@auth0/auth0-react";
 import styles from "./Auth.module.css";
 
 export default function Auth() {
   const [isLogin, setIsLogin] = useState(true);
   const [showPassword, setShowPassword] = useState(false);
+  const [email, setEmail] = useState("");
 
-  const [message, setMessage] = useState("");
+  const { loginWithRedirect, isLoading } = useAuth0();
 
-const handleSubmit = (e) => {
-  e.preventDefault();
-  setMessage(isLogin ? "Signed in successfully!" : "Account created successfully!");
-  setTimeout(() => setMessage(""), 3000);
-};
+  // Email + password: Auth0 hosted page handles it
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    loginWithRedirect({
+      authorizationParams: {
+        screen_hint: isLogin ? "login" : "signup",
+        login_hint: email || undefined,
+      },
+    });
+  };
+
+  const handleSocial = (connection) => {
+    loginWithRedirect({ authorizationParams: { connection } });
+  };
 
   return (
     <main className={styles.page}>
-      {/* Background decorations */}
       <div className={styles.orbOne} />
       <div className={styles.orbTwo} />
       <div className={styles.grid} />
@@ -32,20 +42,17 @@ const handleSubmit = (e) => {
 
           <div className={styles.visualContent}>
             <p className={styles.eyebrow}>WELCOME TO THE FUTURE</p>
-
             <h1>
               Your journey
               <br />
               <span>starts here.</span>
             </h1>
-
             <p className={styles.description}>
               A simple, secure and beautiful way to access your account
               from anywhere.
             </p>
           </div>
 
-          {/* Floating cards */}
           <div className={`${styles.floatingCard} ${styles.cardOne}`}>
             <div className={styles.icon}>✓</div>
             <div>
@@ -69,7 +76,7 @@ const handleSubmit = (e) => {
         <div className={styles.formSection}>
           <div className={styles.formContainer}>
             <div className={styles.logo}>
-              <span >✦</span>
+              <span>✦</span>
             </div>
 
             <div className={styles.heading}>
@@ -81,17 +88,13 @@ const handleSubmit = (e) => {
               </p>
             </div>
 
-            <form className={styles.form}>
+            <form className={styles.form} onSubmit={handleSubmit}>
               {!isLogin && (
                 <div className={styles.inputGroup}>
                   <label>Full name</label>
                   <div className={styles.inputWrapper}>
                     <span className={styles.inputIcon}>♙</span>
-                    <input
-                      type="text"
-                      placeholder="John Doe"
-                      autoComplete="name"
-                    />
+                    <input type="text" placeholder="John Doe" autoComplete="name" />
                   </div>
                 </div>
               )}
@@ -104,6 +107,8 @@ const handleSubmit = (e) => {
                     type="email"
                     placeholder="you@example.com"
                     autoComplete="email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
                   />
                 </div>
               </div>
@@ -111,12 +116,8 @@ const handleSubmit = (e) => {
               <div className={styles.inputGroup}>
                 <div className={styles.labelRow}>
                   <label>Password</label>
-
                   {isLogin && (
-                    <button
-                      type="button"
-                      className={styles.forgot}
-                    >
+                    <button type="button" className={styles.forgot}>
                       Forgot password?
                     </button>
                   )}
@@ -124,15 +125,11 @@ const handleSubmit = (e) => {
 
                 <div className={styles.inputWrapper}>
                   <span className={styles.inputIcon}>⌑</span>
-
                   <input
                     type={showPassword ? "text" : "password"}
                     placeholder="••••••••"
-                    autoComplete={
-                      isLogin ? "current-password" : "new-password"
-                    }
+                    autoComplete={isLogin ? "current-password" : "new-password"}
                   />
-
                   <button
                     type="button"
                     className={styles.passwordToggle}
@@ -148,12 +145,12 @@ const handleSubmit = (e) => {
                 <div className={styles.terms}>
                   <input type="checkbox" id="terms" />
                   <label htmlFor="terms">
-                    I agree to the <a href="/">Terms & Conditions</a>
+                    I agree to the <a href="/">Terms &amp; Conditions</a>
                   </label>
                 </div>
               )}
 
-              <button type="submit" className={styles.submit  }  >
+              <button type="submit" className={styles.submit} disabled={isLoading}>
                 <span>{isLogin ? "Sign in" : "Create account"}</span>
                 <span className={styles.arrow}>→</span>
               </button>
@@ -164,22 +161,27 @@ const handleSubmit = (e) => {
             </div>
 
             <div className={styles.socials}>
-              <button type="button">
+              <button
+                type="button"
+                disabled={isLoading}
+                onClick={() => handleSocial("google-oauth2")}
+              >
                 <span className={styles.google}>G</span>
                 Google
               </button>
 
-              <button type="button">
+              <button
+                type="button"
+                disabled={isLoading}
+                onClick={() => handleSocial("github")}
+              >
                 <span className={styles.github}>◉</span>
                 GitHub
               </button>
             </div>
 
             <p className={styles.switchText}>
-              {isLogin
-                ? "Don't have an account?"
-                : "Already have an account?"}
-
+              {isLogin ? "Don't have an account?" : "Already have an account?"}
               <button
                 type="button"
                 onClick={() => {

@@ -1,28 +1,19 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
-
-import Deepankar from "./Deepankar";
-import Government from "./Government File/Government";
-import JobsSkills from "./job and skill/Jobsskills";
-import Student from "./Student";
-import Farmer from "./Farmer corner/Farmer";
-
-
-         // change file name
+import { BrowserRouter } from "react-router-dom";
+import { Auth0Provider } from "@auth0/auth0-react";
+import App from "./App";
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <BrowserRouter>
-    <Routes>
-      <Route path="/" element={<Deepankar />} />
-      <Route path="/schemes" element={<Government />} />
-      <Route path="/student" element={<Student />} />
-      <Route path="/jobs" element={<JobsSkills />} />
-      <Route path="/farmer" element={<Farmer />} />
- 
-    
-    
- 
-    </Routes>
+    <Auth0Provider
+      domain={import.meta.env.VITE_AUTH0_DOMAIN}
+      clientId={import.meta.env.VITE_AUTH0_CLIENT_ID}
+      authorizationParams={{
+        redirect_uri: window.location.origin + "/dashboard",
+      }}
+    >
+      <App />
+    </Auth0Provider>
   </BrowserRouter>
 );

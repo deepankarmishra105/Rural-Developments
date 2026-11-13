@@ -1,5 +1,6 @@
 import { useEffect, useRef } from "react";
 import "./Landing.css";
+import { Link } from "react-router-dom";
 
 const icons = {
   water: <path d="M12 3c3 4.5 6 7.5 6 11a6 6 0 0 1-12 0c0-3.5 3-6.5 6-11z" />,
